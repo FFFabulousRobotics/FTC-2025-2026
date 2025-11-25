@@ -1,3 +1,4 @@
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -19,7 +20,7 @@ public class ManualOpMode extends LinearOpMode {
         // 功率因数校准数组 [左前, 右前, 左后, 右后]
         // 这些值需要根据实际测试进行调整
         // 例如，如果左前轮比其它轮子慢，可以将其因数设为1.1
-        double[] powerFactors = {1.0, 1.0, 1.0, 1.0};
+        double[] powerFactors = {1.0, 1.0, -1.0, -1.0};
 
         // 创建驱动对象
         drive = new MecanumDrive(leftFront, rightFront, leftRear, rightRear, powerFactors);
