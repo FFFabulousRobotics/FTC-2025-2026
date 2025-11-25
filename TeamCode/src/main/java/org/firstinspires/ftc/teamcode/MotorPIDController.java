@@ -18,13 +18,14 @@ public class MotorPIDController {
     public DcMotor controlled_motor;
     public double Kp, Ki, Kd;
     public double p,i,d;
-    public double max_power;
+    public double max_power=1;
     public double target=0;
     public double error=0,prevError=0;
     public MotorPIDController(DcMotor m, double Kp, double Ki, double Kd){
         controlled_motor=m;
         controlled_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         controlled_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        controlled_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         this.Kp=Kp;
         this.Ki=Ki;
         this.Kd=Kd;
@@ -46,11 +47,15 @@ public class MotorPIDController {
         this.Ki=Ki;
         this.Kd=Kd;
     }
+    public void resetTime(){
+        prevTime=timer.seconds();
+    }
     //this function updates the position of the motor and returns the current error
     public double update(){
         prevError=error;
         error=controlled_motor.getCurrentPosition()-target;
         if(abs(error)>100){
+            prevTime=timer.seconds();
             if(error>0)
                 controlled_motor.setPower(-max_power);
             else
@@ -58,10 +63,10 @@ public class MotorPIDController {
             return error;
         }
         p=Kp*error;
-        i+=Ki*error;
+        i+=Ki*error*(timer.seconds()-prevTime);
         d=(error-prevError)/(timer.seconds()-prevTime)*Kd;
         prevTime=timer.seconds();
-        controlled_motor.setPower(-max(min(p+i+d,max_power),-max_power));
+        controlled_motor.setPower(max(min(-p-i-d,max_power),-max_power));
         return error;
     }
 

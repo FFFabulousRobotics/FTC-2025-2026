@@ -20,14 +20,8 @@ public class ElevateTest extends LinearOpMode {
         DcMotor right = hardwareMap.get(DcMotor.class, "FR");
         waitForStart();
         float lift=0;
-        left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        MotorPIDController left_pid=new MotorPIDController(left,0.1,0.0005,-0.005);
-        MotorPIDController right_pid=new MotorPIDController(right,0.1,0.0005,-0.005);
+        MotorPIDController left_pid=new MotorPIDController(left,0.1,0.00005,0.0005);
+        MotorPIDController right_pid=new MotorPIDController(right,0.1,0.00005,0.0005);
         while(opModeIsActive())
         {
             if(gamepad1.right_trigger>0)
