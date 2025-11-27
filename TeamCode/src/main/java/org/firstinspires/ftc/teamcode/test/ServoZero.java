@@ -7,14 +7,24 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name="Servo Zero Position Test")
+@TeleOp(name="Servo Trigger Test")
 public class ServoZero extends LinearOpMode {
     @Override
     public void runOpMode()
     {
         waitForStart();
-        Servo s=(Servo)(hardwareMap.get("servo"));
-        while(opModeIsActive())
-            s.setPosition(0);
+        Servo s1=(Servo)(hardwareMap.get("servo1"));
+        Servo s2=(Servo)(hardwareMap.get("servo2"));
+        Servo s3=(Servo)(hardwareMap.get("servo3"));
+        while(opModeIsActive()){
+            while(!gamepad1.a);
+            s1.setPosition(0.6);
+            s2.setPosition(0.6);
+            s3.setPosition(0.3);
+            while(!gamepad1.b);
+            s1.setPosition(0.5);
+            s2.setPosition(0.5);
+            s3.setPosition(0.5);
+        }
     }
 }
