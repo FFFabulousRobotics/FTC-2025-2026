@@ -12,8 +12,8 @@ public class ElevateTest extends LinearOpMode {
     @Override
     public void runOpMode() {
         // 初始化电机
-        DcMotor left = hardwareMap.get(DcMotor.class, "FL");
-        DcMotor right = hardwareMap.get(DcMotor.class, "FR");
+        DcMotor left = hardwareMap.get(DcMotor.class, "LL");
+        DcMotor right = hardwareMap.get(DcMotor.class, "LR");
         waitForStart();
         float lift=0;
         MotorPIDController left_pid=new MotorPIDController(left,0.1,0.00005,0.0005);

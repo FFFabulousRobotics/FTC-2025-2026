@@ -13,9 +13,9 @@ public class ServoZero extends LinearOpMode {
     public void runOpMode()
     {
         waitForStart();
-        Servo s1=(Servo)(hardwareMap.get("servo1"));
-        Servo s2=(Servo)(hardwareMap.get("servo2"));
-        Servo s3=(Servo)(hardwareMap.get("servo3"));
+        Servo s1=(Servo)(hardwareMap.get("servo0"));
+        Servo s2=(Servo)(hardwareMap.get("servo1"));
+        Servo s3=(Servo)(hardwareMap.get("servo2"));
         while(opModeIsActive()){
             while(!gamepad1.a);
             s1.setPosition(0.6);
