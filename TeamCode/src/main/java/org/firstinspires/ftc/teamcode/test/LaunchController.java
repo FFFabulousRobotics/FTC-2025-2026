@@ -10,8 +10,11 @@ import org.firstinspires.ftc.teamcode.MotorPIDController;
 public class LaunchController{
     DcMotor motor;
     MotorPIDController pidController;
-    boolean waiting=true;
+    public boolean waiting=true;
     public int state=0;//0-rotating -540 units,1-rotating until stuck,2-rotating back to -180 units
+    double error = 0.0,last_error;
+    ElapsedTime time = new ElapsedTime();
+    double prevTime=0;
     public LaunchController(DcMotor motor,MotorPIDController pidController) {
         pidController.setMaxPower(1);
         this.motor=motor;
@@ -20,18 +23,15 @@ public class LaunchController{
     public void loadLauncher() {
         waiting=false;
         state=0;
-        pidController.setTarget(-1080);
+        pidController.setTarget(-1660);
     }
     public double update(double thres)
     {
-        double error = 0.0,last_error;
-        ElapsedTime time = new ElapsedTime();
-        double prevTime=0;
         if(!waiting) {
             if (state==0) {
                 if (abs(pidController.update()) < 10)
                 {
-                    prevTime=time.milliseconds();
+                    prevTime=time.seconds();
                     state = 1;
                     return 0;
                 }
@@ -40,12 +40,12 @@ public class LaunchController{
                 motor.setPower(-1);
                 last_error = error;
                 error = (double) motor.getCurrentPosition();
-                if (abs(error - last_error)/(time.milliseconds()-prevTime) < thres) {
+                if (abs(error - last_error)/(time.seconds()-prevTime) < thres) {
                     state = 2;
-                    pidController.setTarget(-180);
+                    pidController.setTarget(100);
                 }
-                double t=abs(error - last_error)/(time.milliseconds()-prevTime);
-                prevTime=time.milliseconds();
+                double t=abs(error - last_error)/(time.seconds()-prevTime);
+                prevTime=time.seconds();
                 return t;
             }
             else if(state==2){

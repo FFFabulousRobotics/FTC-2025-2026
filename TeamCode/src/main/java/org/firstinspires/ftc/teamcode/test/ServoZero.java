@@ -20,7 +20,7 @@ public class ServoZero extends LinearOpMode {
             while(!gamepad1.a);
             s1.setPosition(0.6);
             s2.setPosition(0.6);
-            s3.setPosition(0.3);
+            s3.setPosition(0.4);
             while(!gamepad1.b);
             s1.setPosition(0.5);
             s2.setPosition(0.5);
