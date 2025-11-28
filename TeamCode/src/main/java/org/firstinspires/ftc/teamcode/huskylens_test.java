@@ -61,7 +61,8 @@ public class huskylens_test extends LinearOpMode {
                 result+=(data.get(i).id==1?"G":"P");
             return result;
         }
-        return "";
+        else
+            return "";
     }
     @Override
     public void runOpMode() {
@@ -80,7 +81,7 @@ public class huskylens_test extends LinearOpMode {
             while (opModeIsActive()) {
                     HuskyLensBlocks = Arrays.asList(huskylens.blocks());
 //                    telemetry.addData("state","block 0 x"+HuskyLensBlocks.get(0).x+"y"+HuskyLensBlocks.get(0).y+"height"+HuskyLensBlocks.get(0).height+"width"+HuskyLensBlocks.get(0).width);
-//                    telemetry.addData("Block count", JavaUtil.listLength(HuskyLensBlocks));
+                    telemetry.addData("Block count", JavaUtil.listLength(HuskyLensBlocks));
                     String s= processHuskylens(HuskyLensBlocks);
                     telemetry.addData("order",s);
                     telemetry.update();
