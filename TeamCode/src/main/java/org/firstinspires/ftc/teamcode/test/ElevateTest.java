@@ -18,20 +18,25 @@ public class ElevateTest extends LinearOpMode {
         float lift=0;
         MotorPIDController left_pid=new MotorPIDController(left,0.1,0.00005,0.0005);
         MotorPIDController right_pid=new MotorPIDController(right,0.1,0.00005,0.0005);
-        while(opModeIsActive())
-        {
-            if(gamepad1.right_trigger>0)
-            {
-                left_pid.setTarget(-5750);
-                right_pid.setTarget(-5922);
-            }
-            if(gamepad1.left_trigger>0)
-            {
-                left_pid.setTarget(-10);
-                right_pid.setTarget(-10);
-            }
-            left_pid.update();
-            right_pid.update();
-        }
+//        while(opModeIsActive())
+//        {
+//            if(gamepad1.right_trigger>0)
+//            {
+//                left_pid.setTarget(5750);
+//                right_pid.setTarget(5922);
+//            }
+//            if(gamepad1.left_trigger>0)
+//            {
+//                left_pid.setTarget(10);
+//                right_pid.setTarget(10);
+//            }
+//            left_pid.update();
+//            right_pid.update();
+            left.setPower(-1);
+            right.setPower(-1);
+            while(opModeIsActive());
+//        }
+//        left.setPower(0);
+//        right.setPower(0);
     }
 }

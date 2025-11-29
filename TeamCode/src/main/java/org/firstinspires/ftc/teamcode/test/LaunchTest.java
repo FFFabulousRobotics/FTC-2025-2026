@@ -18,11 +18,11 @@ import org.firstinspires.ftc.teamcode.MotorPIDController;
 public class LaunchTest extends LinearOpMode {
     @Override
     public void runOpMode() {
-        DcMotor motor=(DcMotor)(hardwareMap.get("PRESS"));
+        DcMotor motor=(DcMotor)(hardwareMap.get("motor1"));
         MotorPIDController pid=new MotorPIDController(motor,0.1,0.00005,0.0005);
-        Servo s1=(Servo)(hardwareMap.get("servo0"));
-        Servo s2=(Servo)(hardwareMap.get("servo1"));
-        Servo s3=(Servo)(hardwareMap.get("servo2"));
+        Servo s1=(Servo)(hardwareMap.get("servo1"));
+        Servo s2=(Servo)(hardwareMap.get("servo2"));
+        Servo s3=(Servo)(hardwareMap.get("servo3"));
         s1.setPosition(0.6);
         s2.setPosition(0.6);
         s3.setPosition(0.4);

@@ -34,7 +34,7 @@ public class ManualOpMode extends LinearOpMode {
         DcMotor leftRear = hardwareMap.get(DcMotor.class, "BL");
         DcMotor rightRear = hardwareMap.get(DcMotor.class, "BR");
         DcMotor motor = (DcMotor) (hardwareMap.get("PRESS"));
-        MotorPIDController pid = new MotorPIDController(motor, 0.1, 0.000005, 0.0005);
+        MotorPIDController pid = new MotorPIDController(motor, 0.01, 0.0000001, 0.0005);
         DcMotor intake=(DcMotor)hardwareMap.get("IN");
         DcMotor left = hardwareMap.get(DcMotor.class, "LL");
         DcMotor right = hardwareMap.get(DcMotor.class, "LR");
@@ -48,7 +48,7 @@ public class ManualOpMode extends LinearOpMode {
         s2.setPosition(0.6);
         s3.setPosition(0.6);
         ElapsedTime time = new ElapsedTime();
-        double servoTime = 0, motorTime = 0;
+        double servoTime = 0, motorTime = -1.5;
         // 功率因数校准数组 [左前, 右前, 左后, 右后]
         // 这些值需要根据实际测试进行调整
         // 例如，如果左前轮比其它轮子慢，可以将其因数设为1.1
@@ -82,16 +82,16 @@ public class ManualOpMode extends LinearOpMode {
             drive.drive(heading, power, rotation);
 
             // 调试信息
-            telemetry.addData("Heading", "%.1f°", heading);
-            telemetry.addData("Power", "%.2f", power);
-            telemetry.addData("Rotation", "%.2f", rotation);
-            telemetry.addData("Power Factors",
-                    "LF:%.2f, RF:%.2f, LR:%.2f, RR:%.2f",
-                    drive.getPowerFactor(0), drive.getPowerFactor(1),
-                    drive.getPowerFactor(2), drive.getPowerFactor(3));
-            telemetry.update();
+//            telemetry.addData("Heading", "%.1f°", heading);
+//            telemetry.addData("Power", "%.2f", power);
+//            telemetry.addData("Rotation", "%.2f", rotation);
+//            telemetry.addData("Power Factors",
+//                    "LF:%.2f, RF:%.2f, LR:%.2f, RR:%.2f",
+//                    drive.getPowerFactor(0), drive.getPowerFactor(1),
+//                    drive.getPowerFactor(2), drive.getPowerFactor(3));
+//            telemetry.update();
             if (gamepad1.aWasPressed()) {
-                pid.setTarget(-4000);
+                pid.setTarget(-3500);
                 motorTime = time.seconds();
             }
             if (time.seconds() - motorTime >= 1.5) {
@@ -116,30 +116,40 @@ public class ManualOpMode extends LinearOpMode {
                 servoTime = time.seconds();
             }
             if (time.seconds() - servoTime >= 0.1) {
-                s1.setPosition(0.6);
+                s1.setPosition(0.4);
                 s2.setPosition(0.6);
-                s3.setPosition(0.4);
+                s3.setPosition(0.6);
             }
             pid.update();
             if (gamepad1.xWasPressed()) {
                 intake.setPower(1);
 //                intake.setPower(0);
             }
-            if (gamepad1.yWasPressed()){
+            if (gamepad1.yWasPressed()) {
                 intake.setPower(0);
             }
-            if(gamepad1.right_trigger>0)
-            {
-                left_pid.setTarget(-5750);
-                right_pid.setTarget(-5922);
+            if(gamepad1.rightBumperWasPressed()) {
+                left.setPower(1);
+                right.setPower(1);
+//                left_pid.setTarget(-5750);
+//                right_pid.setTarget(-5922);
             }
-            if(gamepad1.left_trigger>0)
-            {
-                left_pid.setTarget(-10);
-                right_pid.setTarget(-10);
+            if(gamepad1.rightBumperWasReleased()) {
+                left.setPower(0);
+                right.setPower(0);
             }
-            left_pid.update();
-            right_pid.update();
+            if(gamepad1.leftBumperWasPressed()) {
+                left.setPower(-1);
+                right.setPower(-1);
+//                left_pid.setTarget(-10);
+//                right_pid.setTarget(-10);
+            }
+            if(gamepad1.leftBumperWasReleased()) {
+                left.setPower(0);
+                right.setPower(0);
+            }
+//            left_pid.update();
+//            right_pid.update();
         }
         pid.setTarget(0);
         while (abs(pid.update()) > 5) ;
