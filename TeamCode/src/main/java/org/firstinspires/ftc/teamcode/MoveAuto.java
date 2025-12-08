@@ -48,7 +48,7 @@ public class MoveAuto extends LinearOpMode {
         drive.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
         drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         waitForStart();
-        drive.drive(0,1,0);
+        drive.drive(-90,1,0);
         sleep(750);
         drive.stop();
 

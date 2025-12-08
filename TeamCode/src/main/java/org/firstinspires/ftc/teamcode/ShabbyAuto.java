@@ -49,17 +49,20 @@ public class ShabbyAuto extends LinearOpMode {
         drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         waitForStart();
         drive.drive(180,1,0);
-        sleep(750);
+        sleep(400);
         drive.stop();
         s1.setPosition(0.5);
         s2.setPosition(0.5);
         s3.setPosition(0.5);
         servoTime = time.seconds();
-        if (time.seconds() - servoTime >= 0.1) {
-            s1.setPosition(0.6);
-            s2.setPosition(0.6);
-            s3.setPosition(0.4);
-        }
+        //if (time.seconds() - servoTime >= 0.1) {
+        sleep(1000);
+        s1.setPosition(0.4);
+        s2.setPosition(0.6);
+        s3.setPosition(0.6);
+        drive.drive(90,1,0);
+        sleep(600);
+        //}
 
 
 
