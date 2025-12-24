@@ -11,7 +11,7 @@ import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver.*;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 //
-@TeleOp(name = "GoBilda Pinpoint 完整测试", group = "测试")
+@TeleOp(name = "GoBilda Pinpoint Test", group = "测试")
 public class PinpointTest extends LinearOpMode {
 
     private GoBildaPinpointDriver pinpointDriver;
@@ -28,12 +28,12 @@ public class PinpointTest extends LinearOpMode {
         // 2. 配置设备参数 (根据你的机器人机械结构修改)
         // 设置吊舱偏移量（单位：毫米）。这是吊舱相对于你希望追踪的“机器人中心”的位置。
         // 例如：X吊舱（负责前进方向）在中心左侧100mm，Y吊舱（负责平移方向）在中心前方150mm
-        pinpointDriver.setOffsets(100.0, 150.0,DistanceUnit.MM);
+        pinpointDriver.setOffsets(-30, 15,DistanceUnit.MM);
 
         // 设置编码器分辨率（如果你使用的是goBilda的摆臂式吊舱）
 //        pinpointDriver.setEncoderResolution(GoBildaOdometryPods.goBILDA_SWINGARM_POD);
 //        GoBildaOdometryPods.goBILDA_SWINGARM_POD
-        pinpointDriver.setEncoderResolution(13.26291192,DistanceUnit.MM);
+        pinpointDriver.setEncoderResolution(52,DistanceUnit.MM);
 
         // 设置编码器方向（根据安装情况调整，如果数值反向则修改）
         pinpointDriver.setEncoderDirections(EncoderDirection.FORWARD, EncoderDirection.FORWARD);
@@ -54,7 +54,7 @@ public class PinpointTest extends LinearOpMode {
         DcMotor rightFront = hardwareMap.get(DcMotor.class, "FR");
         DcMotor leftRear = hardwareMap.get(DcMotor.class, "BL");
         DcMotor rightRear = hardwareMap.get(DcMotor.class, "BR");
-        MecanumDrive drive=new MecanumDrive(leftFront,rightFront,leftRear,rightRear);
+        MecanumDrive drive=new MecanumDrive(leftFront,rightFront,leftRear,rightRear, (GoBildaPinpointDriver) hardwareMap.get("odo"), new double[]{1.0, 1.0, -1.0, -1.0});
         // 4. 主循环 - 读取并显示数据
         while (opModeIsActive()) {
 
@@ -72,7 +72,7 @@ public class PinpointTest extends LinearOpMode {
             }
 
             // 驱动机器人
-            drive.drive(heading, power, rotation);
+            drive.drive(heading, power, true,rotation);
             // 4.1 必须调用update()来获取新数据！
             pinpointDriver.update();
 
@@ -107,11 +107,6 @@ public class PinpointTest extends LinearOpMode {
             telemetry.addData("X 位置", "%.1f mm", xPosMM);
             telemetry.addData("Y 位置", "%.1f mm", yPosMM);
             telemetry.addData("航向角", "%.2f° (%.2f rad)", headingDeg, headingRad);
-
-            // 显示原始编码器值（调试用）
-            telemetry.addLine("=== 原始编码器值（调试）===");
-            telemetry.addData("编码器 X", pinpointDriver.getEncoderX());
-            telemetry.addData("编码器 Y", pinpointDriver.getEncoderY());
 
             // 4.6 根据设备状态给出警告
             if (status != DeviceStatus.READY) {

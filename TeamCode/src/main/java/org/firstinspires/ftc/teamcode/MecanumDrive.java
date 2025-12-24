@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 /**
  * 麦克纳姆轮驱动类
@@ -10,6 +14,7 @@ public class MecanumDrive {
     private final DcMotor leftFront, rightFront, leftRear, rightRear;
     private final double[] powerFactors;
 
+    private final GoBildaPinpointDriver pp;
     /**
      * 构造函数
      * @param leftFront 左前电机
@@ -20,7 +25,7 @@ public class MecanumDrive {
      */
     public MecanumDrive(DcMotor leftFront, DcMotor rightFront,
                         DcMotor leftRear, DcMotor rightRear,
-                        double[] powerFactors) {
+                        GoBildaPinpointDriver pp,double[] powerFactors) {
         this.leftFront = leftFront;
         this.rightFront = rightFront;
         this.leftRear = leftRear;
@@ -29,36 +34,29 @@ public class MecanumDrive {
         // 复制功率因数
         this.powerFactors = new double[4];
         System.arraycopy(powerFactors, 0, this.powerFactors, 0, 4);
-
+        this.pp=pp;
+        pp.resetPosAndIMU();
+        pp.setEncoderResolution(52, DistanceUnit.MM);
+        pp.setOffsets(-30,15,DistanceUnit.MM);
         // 设置电机方向（根据实际安装调整）
         // 如果某些电机方向相反，可以在这里调整
         rightFront.setDirection(DcMotor.Direction.REVERSE);
         rightRear.setDirection(DcMotor.Direction.REVERSE);
     }
-
-    /**
-     * 简化的构造函数，使用默认功率因数1.0
-     */
-    public MecanumDrive(DcMotor leftFront, DcMotor rightFront,
-                        DcMotor leftRear, DcMotor rightRear) {
-        this(leftFront, rightFront, leftRear, rightRear, new double[]{1.0, 1.0, 1.0, 1.0});
+    public GoBildaPinpointDriver getIMU(){
+        return pp;
     }
-
-    /**
-     * 麦克纳姆轮驱动函数
-     * @param heading 方位角（度），相对于机器人当前前方
-     *                0°=前方，90°=右侧，-90°=左侧，180°=后方
-     * @param power 平移速度（0-1）
-     * @param rotation 旋转速度（-1到1），正值为顺时针
-     */
-    public void drive(double heading, double power, double rotation) {
+    public void drive(double heading, double power, boolean absolute, double rotation) {
         // 限制输入范围
         power = Math.max(-1, Math.min(1, power));
         rotation = Math.max(-1, Math.min(1, rotation));
 
         // 转换为弧度
-        double headingRad = Math.toRadians(heading);
-
+        double headingRad;
+        if(absolute)
+            headingRad=Math.toRadians(heading+pp.getHeading(AngleUnit.DEGREES));
+        else
+            headingRad = Math.toRadians(heading);
         // 计算机器人坐标系下的运动分量
         double forward = power * Math.cos(headingRad);  // 前后分量
         double strafe = power * Math.sin(headingRad);   // 左右分量

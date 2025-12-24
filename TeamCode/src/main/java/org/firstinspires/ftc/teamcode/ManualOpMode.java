@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import static java.lang.Math.abs;
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -55,7 +56,7 @@ public class ManualOpMode extends LinearOpMode {
         double[] powerFactors = {1.0, 1.0, -1.0, -1.0};
 
         // 创建驱动对象
-        drive = new MecanumDrive(leftFront, rightFront, leftRear, rightRear, powerFactors);
+        drive = new MecanumDrive(leftFront, rightFront, leftRear, rightRear, (GoBildaPinpointDriver)hardwareMap.get("odo"), powerFactors);
 
         // 设置电机模式
         drive.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -79,7 +80,7 @@ public class ManualOpMode extends LinearOpMode {
             }
 
             // 驱动机器人
-            drive.drive(heading, power, rotation);
+            drive.drive(heading, power, false, rotation);
 
             // 调试信息
 //            telemetry.addData("Heading", "%.1f°", heading);
@@ -91,7 +92,7 @@ public class ManualOpMode extends LinearOpMode {
 //                    drive.getPowerFactor(2), drive.getPowerFactor(3));
 //            telemetry.update();
             if (gamepad1.aWasPressed()) {
-                pid.setTarget(-3500);
+                pid.setTarget(-4500);
                 motorTime = time.seconds();
             }
             if (time.seconds() - motorTime >= 1.5) {
