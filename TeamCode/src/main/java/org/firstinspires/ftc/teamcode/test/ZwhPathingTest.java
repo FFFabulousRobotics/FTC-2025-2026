@@ -42,13 +42,13 @@ public class ZwhPathingTest extends LinearOpMode {
         drive.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         // 或者使用自定义PID参数（取消注释以下代码使用自定义参数）
-        double[] distancePIDParams = {2e-3, 2e-5, 0.01};
-        double[] anglePIDParams = {5e-2, 1e-5, 0.005};
+        double[] distancePIDParams = {2e-3, 5e-5, 0.01};
+        double[] anglePIDParams = {5e-2, 1e-5, 0.01};
         pathing = new ZwhPathing(drive, 0,
                                  distancePIDParams, anglePIDParams,
-                                 0.7,  // 最大功率
+                                 0.2,  // 最大功率
                                  2.0,  // 旋转容差（度）
-                                 80.0  // 距离容差（mm）
+                                 20.0  // 距离容差（mm）
                                 );
         double targetX = 500,targetY = 500,targetHeading = 45;
         telemetry.addData("状态", "初始化完成，等待开始...");
@@ -65,6 +65,8 @@ public class ZwhPathingTest extends LinearOpMode {
         boolean targetReached = false;
         // 主控制循环
         while (opModeIsActive()) {
+            telemetry.addData("dx,dy","%.1f,%.1f",pathing.dx,pathing.dy);
+            telemetry.addData("moveHeading","%.1f",pathing.moveHeading);
             if(gamepad1.aWasPressed()) {
                 targetX+=10;
                 pathing.setTarget(targetX,targetY,targetHeading);

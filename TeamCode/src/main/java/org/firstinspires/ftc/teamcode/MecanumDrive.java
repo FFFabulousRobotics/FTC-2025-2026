@@ -38,6 +38,7 @@ public class MecanumDrive {
         pp.resetPosAndIMU();
         pp.setEncoderResolution(52, DistanceUnit.MM);
         pp.setOffsets(-30,15,DistanceUnit.MM);
+        pp.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.REVERSED);
         // 设置电机方向（根据实际安装调整）
         // 如果某些电机方向相反，可以在这里调整
         rightFront.setDirection(DcMotor.Direction.REVERSE);
@@ -54,9 +55,9 @@ public class MecanumDrive {
         // 转换为弧度
         double headingRad;
         if(absolute)
-            headingRad=Math.toRadians(heading+pp.getHeading(AngleUnit.DEGREES));
+            headingRad=Math.toRadians(pp.getHeading(AngleUnit.DEGREES)-heading);
         else
-            headingRad = Math.toRadians(heading);
+            headingRad = Math.toRadians(-heading);
         // 计算机器人坐标系下的运动分量
         double forward = power * Math.cos(headingRad);  // 前后分量
         double strafe = power * Math.sin(headingRad);   // 左右分量

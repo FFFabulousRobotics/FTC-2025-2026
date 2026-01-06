@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.test;
 
+import static android.os.SystemClock.sleep;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 import static java.lang.Math.abs;
 import static java.lang.Math.atan2;
@@ -32,6 +33,7 @@ public class ZwhPathing {
     private double startX;
     private double startY;
     double[] dParams, aParams;
+    public double dx,dy,moveHeading,movePower,rotationPower;
     boolean state=false;//false:far, true:near, reduce PID coefficients
     // 自定义控制参数
     public ZwhPathing(MecanumDrive drive, double offsetDegrees,
@@ -42,6 +44,7 @@ public class ZwhPathing {
         aParams=anglePIDParams;
         this.md = drive;
         drive.getIMU().resetPosAndIMU();
+        sleep(1000);
         offset = offsetDegrees;
 
         // 初始化PID控制器
@@ -139,12 +142,11 @@ public class ZwhPathing {
         updateRobotState();
         double dx = targetX-X;
         double dy = targetY-Y;
-        double moveHeading=toDegrees(atan2(dy,dx));
-        double distance;
-        if(((targetX-startX)*(targetX-X)+(targetY-startY)*(targetY-Y))/hypot(targetX-startX,targetY-startY)<0)
-            distance=-hypot(dx,dy);
-        else
-            distance=hypot(dx,dy);
+        this.dx=dx;
+        this.dy=dy;
+        double moveHeading=toDegrees(atan2(dx,dy));
+        this.moveHeading=moveHeading;
+        double distance=hypot(dx,dy);
         double angleError = normalizeAngle180(targetHeading-Heading);
         double rotationPower=anglePID.update(angleError);
         double movePower;
@@ -159,11 +161,11 @@ public class ZwhPathing {
                 state=true;
                 distancePID.setPidCoefficients(dParams[0]/2,dParams[1]/2,dParams[2]*1.5);
             }
-            movePower=distancePID.update(distance);
+            movePower=-distancePID.update(distance);
             movePower = Math.max(-maxPower, Math.min(maxPower, movePower));
         }
         else{
-            movePower=distancePID.update(distance);
+            movePower=-distancePID.update(distance);
             movePower = Math.max(-maxPower, Math.min(maxPower, movePower));
         }
         // 使用绝对角度模式（移动方向是场地绝对坐标系）

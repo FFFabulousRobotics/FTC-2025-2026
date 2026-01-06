@@ -36,7 +36,7 @@ public class PinpointTest extends LinearOpMode {
         pinpointDriver.setEncoderResolution(52,DistanceUnit.MM);
 
         // 设置编码器方向（根据安装情况调整，如果数值反向则修改）
-        pinpointDriver.setEncoderDirections(EncoderDirection.FORWARD, EncoderDirection.FORWARD);
+        pinpointDriver.setEncoderDirections(EncoderDirection.REVERSED, EncoderDirection.REVERSED);
 
         // 3. 等待开始，并执行初始校准
         telemetry.addData("状态", "准备校准，请确保机器人静止");
@@ -58,10 +58,10 @@ public class PinpointTest extends LinearOpMode {
         // 4. 主循环 - 读取并显示数据
         while (opModeIsActive()) {
 
-            double gamepadX = gamepad1.left_stick_x;
-            double gamepadY = -gamepad1.left_stick_y;  // 反转Y轴
+            double gamepadX = -gamepad1.left_stick_x;
+            double gamepadY = -gamepad1.left_stick_y;
             double rotation = gamepad1.right_stick_x;
-
+            telemetry.addData("angle:",Math.toDegrees(Math.atan2(gamepadX,gamepadY)));
             // 计算相对于机器人的方位角和功率
             double heading = Math.toDegrees(Math.atan2(gamepadX, gamepadY));
             double power = Math.sqrt(gamepadX * gamepadX + gamepadY * gamepadY);
