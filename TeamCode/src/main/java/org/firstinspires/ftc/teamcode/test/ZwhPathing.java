@@ -159,7 +159,7 @@ public class ZwhPathing {
             if(abs(distance)<distanceTolerance*3) {
                 distancePID.reset();
                 state=true;
-                distancePID.setPidCoefficients(dParams[0]/2,dParams[1]/2,dParams[2]*1.5);
+                distancePID.setPidCoefficients(dParams[0]/2,dParams[1]/2,dParams[2]);
             }
             movePower=-distancePID.update(distance);
             movePower = Math.max(-maxPower, Math.min(maxPower, movePower));

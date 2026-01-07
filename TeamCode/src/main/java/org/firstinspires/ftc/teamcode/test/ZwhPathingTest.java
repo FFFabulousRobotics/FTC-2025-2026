@@ -42,11 +42,11 @@ public class ZwhPathingTest extends LinearOpMode {
         drive.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         // 或者使用自定义PID参数（取消注释以下代码使用自定义参数）
-        double[] distancePIDParams = {2e-3, 5e-5, 0.01};
-        double[] anglePIDParams = {5e-2, 1e-5, 0.01};
+        double[] distancePIDParams = {2e-2, 5e-4, 0.01};
+        double[] anglePIDParams = {5e-2, 1e-4, 0.01};
         pathing = new ZwhPathing(drive, 0,
                                  distancePIDParams, anglePIDParams,
-                                 0.2,  // 最大功率
+                                 0.6,  // 最大功率
                                  2.0,  // 旋转容差（度）
                                  20.0  // 距离容差（mm）
                                 );

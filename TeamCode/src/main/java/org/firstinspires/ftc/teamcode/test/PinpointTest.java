@@ -88,11 +88,6 @@ public class PinpointTest extends LinearOpMode {
             double headingRad = currentPose.getHeading(AngleUnit.RADIANS);
             double headingDeg = currentPose.getHeading(AngleUnit.DEGREES);
 
-            // 方式二：使用独立的get方法（与上面等效）
-            // double xPosMM = pinpointDriver.getPosX();
-            // double yPosMM = pinpointDriver.getPosY();
-            // double headingRad = pinpointDriver.getHeading(); // 非归一化，单位弧度
-
             // 4.4 获取其他信息
             double loopFreq = pinpointDriver.getFrequency();
             int loopTime = pinpointDriver.getLoopTime();
