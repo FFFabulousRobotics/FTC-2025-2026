@@ -144,7 +144,7 @@ public class ZwhPathing {
         double dy = targetY-Y;
         this.dx=dx;
         this.dy=dy;
-        double moveHeading=toDegrees(atan2(dx,dy));
+        double moveHeading=toDegrees(atan2(dy,dx));
         this.moveHeading=moveHeading;
         double distance=hypot(dx,dy);
         double angleError = normalizeAngle180(targetHeading-Heading);
@@ -152,14 +152,14 @@ public class ZwhPathing {
         double movePower;
         // 检查是否到达目标
         if (abs(distance) < distanceTolerance &&abs(angleError)< rotationTolerance) {
-            md.drive(0, 0, false, 0);
+            md.drive(0, 0, true, 0);
             return true;
         }
         if(!state){
             if(abs(distance)<distanceTolerance*3) {
                 distancePID.reset();
                 state=true;
-                distancePID.setPidCoefficients(dParams[0]/2,dParams[1]/2,dParams[2]);
+                distancePID.setPidCoefficients(dParams[0]/1.2,dParams[1]/1.2,dParams[2]);
             }
             movePower=-distancePID.update(distance);
             movePower = Math.max(-maxPower, Math.min(maxPower, movePower));
