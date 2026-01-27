@@ -66,7 +66,7 @@ public class ManualOpMode extends LinearOpMode {
 
         while (opModeIsActive()) {
             // 从游戏手柄获取输入
-            double gamepadX = gamepad1.left_stick_x;
+            double gamepadX = -gamepad1.left_stick_x;
             double gamepadY = -gamepad1.left_stick_y;  // 反转Y轴
             double rotation = gamepad1.right_stick_x;
 
@@ -128,6 +128,9 @@ public class ManualOpMode extends LinearOpMode {
             }
             if (gamepad1.yWasPressed()) {
                 intake.setPower(0);
+            }
+            if (gamepad1.bWasPressed()) {
+                intake.setPower(-1);
             }
             if(gamepad1.rightBumperWasPressed()) {
                 left.setPower(1);

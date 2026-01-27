@@ -42,15 +42,15 @@ public class ZwhPathingTest extends LinearOpMode {
         drive.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         // 或者使用自定义PID参数（取消注释以下代码使用自定义参数）
-        double[] distancePIDParams = {5e-2, 5e-3, 0.01};
-        double[] anglePIDParams = {5e-2, 1e-3, 0.01};
+        double[] distancePIDParams = {5e-2, 8e-2, 0.01};
+        double[] anglePIDParams = {8e-2, 4e-2, 0.01};
         pathing = new ZwhPathing(drive, 0,
                 distancePIDParams, anglePIDParams,
                 1,  // 最大功率
-                0.5,  // 旋转容差（度）
-                1.0  // 距离容差（mm）
+                2.0,  // 旋转容差（度）
+                10.0  // 距离容差（mm）
         );
-        double targetX = 500,targetY = 500,targetHeading = 45;
+        double targetX = 663,targetY = 709,targetHeading = 36;
         telemetry.addData("状态", "初始化完成，等待开始...");
         telemetry.addData("目标位置", "(%.1f, %.1f) mm", targetX, targetY);
         telemetry.addData("目标朝向", "%.1f°", targetHeading);
@@ -67,12 +67,12 @@ public class ZwhPathingTest extends LinearOpMode {
         while (opModeIsActive()) {
             telemetry.addData("dx,dy","%.1f,%.1f",pathing.dx,pathing.dy);
             telemetry.addData("moveHeading","%.1f",pathing.moveHeading);
-            if(gamepad1.aWasPressed()) {
+            if(gamepad1.yWasPressed()) {
                 targetX+=10;
                 pathing.setTarget(targetX,targetY,targetHeading);
                 runtime.reset();
             }
-            if(gamepad1.bWasPressed()) {
+            if(gamepad1.aWasPressed()) {
                 targetX-=10;
                 pathing.setTarget(targetX,targetY,targetHeading);
                 runtime.reset();
@@ -82,7 +82,7 @@ public class ZwhPathingTest extends LinearOpMode {
                 pathing.setTarget(targetX,targetY,targetHeading);
                 runtime.reset();
             }
-            if(gamepad1.yWasPressed()) {
+            if(gamepad1.bWasPressed()) {
                 targetY-=10;
                 pathing.setTarget(targetX,targetY,targetHeading);
                 runtime.reset();
@@ -96,6 +96,14 @@ public class ZwhPathingTest extends LinearOpMode {
                 targetHeading+=5;
                 pathing.setTarget(targetX,targetY,targetHeading);
                 runtime.reset();
+            }
+            if(gamepad1.leftBumperWasPressed())
+            {
+                targetX=50;
+                targetY=-50;
+                targetHeading=180;
+                pathing.setTarget(targetX,targetY,targetHeading);
+                targetReached=false;
             }
             if(gamepad1.rightBumperWasPressed())
             {

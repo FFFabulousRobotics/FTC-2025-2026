@@ -156,17 +156,17 @@ public class ZwhPathing {
             return true;
         }
         if(!state){
-            if(abs(distance)<distanceTolerance*3) {
+            if(abs(distance)<distanceTolerance*20) {
                 distancePID.reset();
                 state=true;
-                distancePID.setPidCoefficients(dParams[0]/1.2,dParams[1]/1.2,dParams[2]);
+                distancePID.setPidCoefficients(dParams[0]*0.5,dParams[1]*0.5,dParams[2]);
             }
             movePower=-distancePID.update(distance);
             movePower = Math.max(-maxPower, Math.min(maxPower, movePower));
         }
         else{
             movePower=-distancePID.update(distance);
-            movePower = Math.max(-maxPower, Math.min(maxPower, movePower));
+            movePower = Math.max(-maxPower*0.8, Math.min(maxPower*0.8, movePower));
         }
         // 使用绝对角度模式（移动方向是场地绝对坐标系）
         md.drive(moveHeading, movePower, true, rotationPower);
@@ -176,7 +176,9 @@ public class ZwhPathing {
         double currentX = md.getIMU().getPosX(DistanceUnit.MM);
         double currentY = md.getIMU().getPosY(DistanceUnit.MM);
         double distance = hypot(targetX - currentX, targetY - currentY);
-        if (distance > distanceTolerance) return false;
+        double heading = md.getIMU().getHeading(AngleUnit.DEGREES);
+        double angleError = normalizeAngle180(targetHeading - heading);
+        if (distance > distanceTolerance||angleError > rotationTolerance) return false;
         return true;
     }
 }
