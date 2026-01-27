@@ -8,12 +8,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+public class ShbbyAutoForBlue extends LinearOpMode{
 
-@Autonomous
-public class ShabbyAuto extends LinearOpMode {
     private MecanumDrive drive;
-
-
     public void runOpMode() {
         // 初始化电机
         DcMotor leftFront = hardwareMap.get(DcMotor.class, "FL");
@@ -43,13 +40,13 @@ public class ShabbyAuto extends LinearOpMode {
         double[] powerFactors = {1.0, 1.0, -1.0, -1.0};
 
         // 创建驱动对象
-        drive = new MecanumDrive(leftFront, rightFront, leftRear, rightRear, (GoBildaPinpointDriver)hardwareMap.get("odo"),powerFactors);
+        drive = new MecanumDrive(leftFront, rightFront, leftRear, rightRear, (GoBildaPinpointDriver) hardwareMap.get("odo"), powerFactors);
 
         // 设置电机模式
         drive.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
         drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         waitForStart();
-        drive.drive(180,1,false,0);
+        drive.drive(180, 1, false, 0);
         sleep(400);
         drive.stop();
         sleep(500);
@@ -62,39 +59,7 @@ public class ShabbyAuto extends LinearOpMode {
         s1.setPosition(0.4);
         s2.setPosition(0.6);
         s3.setPosition(0.6);
-        drive.drive(90,1,false,0);
+        drive.drive(-90, 1, false, 0);
         sleep(600);
-        //}
-
-
-
-
-
-
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

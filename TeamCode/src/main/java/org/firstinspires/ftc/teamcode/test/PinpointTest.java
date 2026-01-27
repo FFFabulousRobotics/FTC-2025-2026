@@ -15,7 +15,6 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 public class PinpointTest extends LinearOpMode {
 
     private GoBildaPinpointDriver pinpointDriver;
-
     @Override
     public void runOpMode() {
         // 1. 初始化设备

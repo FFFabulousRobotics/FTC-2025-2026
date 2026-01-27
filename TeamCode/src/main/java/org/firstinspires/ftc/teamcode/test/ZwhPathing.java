@@ -156,7 +156,7 @@ public class ZwhPathing {
             return true;
         }
         if(!state){
-            if(abs(distance)<distanceTolerance*20) {
+            if(abs(distance)<distanceTolerance*2) {
                 distancePID.reset();
                 state=true;
                 distancePID.setPidCoefficients(dParams[0]*0.5,dParams[1]*0.5,dParams[2]);
