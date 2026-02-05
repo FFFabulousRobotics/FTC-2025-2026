@@ -39,13 +39,6 @@ public class ManualOpMode extends LinearOpMode {
         DcMotor intake=(DcMotor)hardwareMap.get("IN");
         DcMotor left = hardwareMap.get(DcMotor.class, "LL");
         DcMotor right = hardwareMap.get(DcMotor.class, "LR");
-
-
-
-
-
-
-
         float lift=0;
         MotorPIDController left_pid=new MotorPIDController(left,0.1,0.00005,0.0005);
         MotorPIDController right_pid=new MotorPIDController(right,0.1,0.00005,0.0005);

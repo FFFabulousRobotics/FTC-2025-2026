@@ -42,8 +42,8 @@ public class ZwhPathingTest extends LinearOpMode {
         drive.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         // 或者使用自定义PID参数（取消注释以下代码使用自定义参数）
-        double[] distancePIDParams = {5e-2, 8e-2, 0.01};
-        double[] anglePIDParams = {8e-2, 4e-2, 0.01};
+        double[] distancePIDParams = {5e-2, 8e-5, 0.01};
+        double[] anglePIDParams = {8e-2, 4e-5, 0.01};
         pathing = new ZwhPathing(drive, 0,
                 distancePIDParams, anglePIDParams,
                 1,  // 最大功率

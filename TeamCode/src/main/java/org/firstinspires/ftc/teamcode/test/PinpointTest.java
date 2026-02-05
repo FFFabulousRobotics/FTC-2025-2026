@@ -27,7 +27,7 @@ public class PinpointTest extends LinearOpMode {
         // 2. 配置设备参数 (根据你的机器人机械结构修改)
         // 设置吊舱偏移量（单位：毫米）。这是吊舱相对于你希望追踪的“机器人中心”的位置。
         // 例如：X吊舱（负责前进方向）在中心左侧100mm，Y吊舱（负责平移方向）在中心前方150mm
-        pinpointDriver.setOffsets(-30, 15,DistanceUnit.MM);
+        pinpointDriver.setOffsets(62, -48,DistanceUnit.MM);
 
         // 设置编码器分辨率（如果你使用的是goBilda的摆臂式吊舱）
 //        pinpointDriver.setEncoderResolution(GoBildaOdometryPods.goBILDA_SWINGARM_POD);

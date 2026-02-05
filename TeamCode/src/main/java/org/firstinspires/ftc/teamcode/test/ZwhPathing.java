@@ -24,7 +24,7 @@ public class ZwhPathing {
     private double targetHeading;
 
     // 控制参数
-    private final double maxPower;
+    private double maxPower;
     private final double rotationTolerance;  // 旋转容差(度)
     private final double distanceTolerance;  // 距离容差(mm)
     // 状态跟踪
@@ -155,7 +155,7 @@ public class ZwhPathing {
             md.drive(0, 0, true, 0);
             return true;
         }
-        if(!state){
+        if(!state){//2 maybe 1.5 ?
             if(abs(distance)<distanceTolerance*2) {
                 distancePID.reset();
                 state=true;
@@ -171,6 +171,9 @@ public class ZwhPathing {
         // 使用绝对角度模式（移动方向是场地绝对坐标系）
         md.drive(moveHeading, movePower, true, rotationPower);
         return false;
+    }
+    public void setMaxPower(double mp) {
+        maxPower=mp;
     }
     public boolean isAtTarget() {
         double currentX = md.getIMU().getPosX(DistanceUnit.MM);

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
+
 import static java.lang.Math.abs;
+
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -7,13 +9,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import static java.lang.Math.random;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.test.ZwhPathing;
+
 @Autonomous
-public class RedAuto extends LinearOpMode{
+public class BlueAuto extends LinearOpMode{
     public void shoot(Servo s1,Servo s2,Servo s3)
     {
         s1.setPosition(0.5);
@@ -39,7 +38,7 @@ public class RedAuto extends LinearOpMode{
             sleep(5);
     }
     public void safe(ZwhPathing pathing) {
-        pathing.setTarget(-450.2,19.8,-37.53);
+        pathing.setTarget(-546.7,3.3,37.50);
         while(!pathing.update())
             sleep(10);
         sleep(500);
@@ -57,14 +56,14 @@ public class RedAuto extends LinearOpMode{
     }
     public void step(boolean open,double x0,double y0,double x1,double y1,ZwhPathing pathing,DcMotor intake,Servo s1,Servo s2,Servo s3,MotorPIDController pid) {
         safe(pathing);
-        pathing.setTarget(x0,y0,-37.62);
+        pathing.setTarget(x0,y0,38.26);
         while(!pathing.update())
             sleep(10);
         intake.setPower(1);
         sleep(100);
         pathing.setMaxPower(0.6);
         //go forward and get the artifacts
-        pathing.setTarget(x1,y1,-37.62);
+        pathing.setTarget(x1,y1,38.26);
         while(!pathing.update())
             sleep(10);
         pathing.setMaxPower(1.0);
@@ -131,10 +130,10 @@ public class RedAuto extends LinearOpMode{
         shoot(s1, s2, s3);
         press(pid);
         sleep(50);
-        step(true,-415.6,-137.0,-192.9,-309.9,pathing,intake,s1,s2,s3,pid);
+        step(true,-425.9,150.9,-249.3,285.0,pathing,intake,s1,s2,s3,pid);
         sleep(100);
-        step(false,-547.3,-325.1,-339.9,-494.3,pathing,intake,s1,s2,s3,pid);
+        step(false,-596.5,310.0,-382.1,474.5,pathing,intake,s1,s2,s3,pid);
         sleep(100);
-        step(false,-709.8,-485.8,-480.7,-670.0,pathing,intake,s1,s2,s3,pid);
+        step(false,-693.8,523.0,-516.1,660.8,pathing,intake,s1,s2,s3,pid);
     }
 }
