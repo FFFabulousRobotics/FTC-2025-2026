@@ -34,6 +34,7 @@ public class MotorPIDController {
     {
         this.target=target;
     }
+    public double getTarget() {return target;}
     public void setMaxPower(double maxPower){
         max_power=maxPower;
     }

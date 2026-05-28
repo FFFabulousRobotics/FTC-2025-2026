@@ -16,6 +16,7 @@ public class BlueAuto extends LinearOpMode{
     public void shoot(Servo s1,Servo s2,Servo s3)
     {
         s1.setPosition(0.5);
+        sleep(100);
         s3.setPosition(0.5);
         sleep(100);
         s2.setPosition(0.5);
@@ -24,24 +25,10 @@ public class BlueAuto extends LinearOpMode{
         s2.setPosition(0.6);
         s3.setPosition(0.6);
     }
-    public void press(MotorPIDController pid)
-    {
-        ElapsedTime time = new ElapsedTime();
-        double t0 = time.seconds();
-        //press shooter
-        pid.setTarget(-7000);
-        while(time.seconds()-t0<2.0)
-            pid.update();
-        //release press
-        pid.setTarget(-2000);
-        while(abs(pid.update())>=200)
-            sleep(5);
-    }
     public void safe(ZwhPathing pathing) {
         pathing.setTarget(-546.7,3.3,37.50);
         while(!pathing.update())
             sleep(10);
-        sleep(500);
     }
     public void reset_press(MotorPIDController pid) {
         ElapsedTime time = new ElapsedTime();
@@ -55,12 +42,25 @@ public class BlueAuto extends LinearOpMode{
         pid.controlled_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
     public void step(boolean open,double x0,double y0,double x1,double y1,ZwhPathing pathing,DcMotor intake,Servo s1,Servo s2,Servo s3,MotorPIDController pid) {
+        ElapsedTime time = new ElapsedTime();
+        double t0 = time.seconds(), t1 = time.seconds();
+        //press shooter
+        pid.setTarget(-7000);
         safe(pathing);
         pathing.setTarget(x0,y0,38.26);
         while(!pathing.update())
+        {
+            if(time.seconds()-t0<2.0)
+                pid.update();
             sleep(10);
+            t1 = time.seconds();
+        }
+        while(time.seconds()-t1<2.0)
+            pid.update();
         intake.setPower(1);
-        sleep(100);
+        pid.setTarget(-1200);
+        while(abs(pid.update())>=200)
+            sleep(5);
         pathing.setMaxPower(0.6);
         //go forward and get the artifacts
         pathing.setTarget(x1,y1,38.26);
@@ -78,8 +78,7 @@ public class BlueAuto extends LinearOpMode{
                 sleep(10);
         }*/
         sleep(200);
-        pathing.setTarget(-223.6,5.0,-0.25);
-        press(pid);
+        pathing.setTarget(-212.2,41.9,-10.55);
         while(!pathing.update())
             sleep(10);
         shoot(s1,s2,s3);
@@ -115,6 +114,8 @@ public class BlueAuto extends LinearOpMode{
         Servo s1 = (Servo) (hardwareMap.get("servo0"));
         Servo s2 = (Servo) (hardwareMap.get("servo1"));
         Servo s3 = (Servo) (hardwareMap.get("servo2"));
+        Servo brush = (Servo) (hardwareMap.get("Brush"));
+        brush.setPosition(1);
         s1.setPosition(0.4);
         s2.setPosition(0.6);
         s3.setPosition(0.6);
@@ -124,16 +125,16 @@ public class BlueAuto extends LinearOpMode{
         drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         waitForStart();
         //go to shooting pos and shoot
-        pathing.setTarget(-223.6,5.0,-0.25);
+        pathing.setTarget(-212.2,41.9,-10.55);
         while (!pathing.update())
             sleep(10);
         shoot(s1, s2, s3);
-        press(pid);
         sleep(50);
         step(true,-425.9,150.9,-249.3,285.0,pathing,intake,s1,s2,s3,pid);
         sleep(100);
         step(false,-596.5,310.0,-382.1,474.5,pathing,intake,s1,s2,s3,pid);
         sleep(100);
         step(false,-693.8,523.0,-516.1,660.8,pathing,intake,s1,s2,s3,pid);
+        pathing.setTarget(-223.6,35.0,-0.25);
     }
 }

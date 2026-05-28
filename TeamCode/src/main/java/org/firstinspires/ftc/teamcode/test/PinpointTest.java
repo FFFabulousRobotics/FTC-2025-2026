@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.test;
 
+import static java.lang.Double.max;
+import static java.lang.Double.min;
+
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -27,12 +30,12 @@ public class PinpointTest extends LinearOpMode {
         // 2. 配置设备参数 (根据你的机器人机械结构修改)
         // 设置吊舱偏移量（单位：毫米）。这是吊舱相对于你希望追踪的“机器人中心”的位置。
         // 例如：X吊舱（负责前进方向）在中心左侧100mm，Y吊舱（负责平移方向）在中心前方150mm
-        pinpointDriver.setOffsets(62, -48,DistanceUnit.MM);
+        pinpointDriver.setOffsets(-30, 15, DistanceUnit.MM);
 
         // 设置编码器分辨率（如果你使用的是goBilda的摆臂式吊舱）
 //        pinpointDriver.setEncoderResolution(GoBildaOdometryPods.goBILDA_SWINGARM_POD);
 //        GoBildaOdometryPods.goBILDA_SWINGARM_POD
-        pinpointDriver.setEncoderResolution(52,DistanceUnit.MM);
+        pinpointDriver.setEncoderResolution(52, DistanceUnit.MM);
 
         // 设置编码器方向（根据安装情况调整，如果数值反向则修改）
         pinpointDriver.setEncoderDirections(EncoderDirection.REVERSED, EncoderDirection.REVERSED);
@@ -53,6 +56,7 @@ public class PinpointTest extends LinearOpMode {
         DcMotor rightFront = hardwareMap.get(DcMotor.class, "FR");
         DcMotor leftRear = hardwareMap.get(DcMotor.class, "BL");
         DcMotor rightRear = hardwareMap.get(DcMotor.class, "BR");
+        double xPosMMmax = -200, xPosMMmin = 200, yPosMMmax = -200, yPosMMmin = 200;
         MecanumDrive drive=new MecanumDrive(leftFront,rightFront,leftRear,rightRear, (GoBildaPinpointDriver) hardwareMap.get("odo"), new double[]{1.0, 1.0, -1.0, -1.0});
         // 4. 主循环 - 读取并显示数据
         while (opModeIsActive()) {
@@ -101,6 +105,14 @@ public class PinpointTest extends LinearOpMode {
             telemetry.addData("X 位置", "%.1f mm", xPosMM);
             telemetry.addData("Y 位置", "%.1f mm", yPosMM);
             telemetry.addData("航向角", "%.2f° (%.2f rad)", headingDeg, headingRad);
+            xPosMMmax = max(xPosMMmax, xPosMM);
+            xPosMMmin = min(xPosMMmin, xPosMM);
+            yPosMMmax = max(yPosMMmax, yPosMM);
+            yPosMMmin = min(yPosMMmin, yPosMM);
+            telemetry.addData("X 位置max", "%.1f mm", xPosMMmax);
+            telemetry.addData("X 位置min", "%.1f mm", xPosMMmin);
+            telemetry.addData("Y 位置max", "%.1f mm", yPosMMmax);
+            telemetry.addData("Y 位置min", "%.1f mm", yPosMMmin);
 
             // 4.6 根据设备状态给出警告
             if (status != DeviceStatus.READY) {
