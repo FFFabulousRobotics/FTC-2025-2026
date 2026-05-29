@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.test;
 
 import static java.lang.Math.abs;
 import static java.lang.Thread.sleep;
@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.MotorPIDController;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous
@@ -62,14 +63,14 @@ public class PedroPathing_forBlue extends OpMode {
 
     private final Pose startPose = new Pose(22,120,Math.toRadians(136));
     private final Pose launchPose = new Pose(34.58344640434193,108.04884667571235,Math.toRadians(136));
-    private final Pose intake1_start = new Pose(38.49118046132972,84.40705563093623,Math.toRadians(180));
-    private final Pose intake1_end = new Pose(15.230936227951153,84.40705563093623,Math.toRadians(180));
-    private final Pose intake2_start = new Pose(38.29579375848033,60.37449118046133,Math.toRadians(180));
-    private final Pose intake2_end = new Pose(15.230936227951153,60.37449118046133,Math.toRadians(180));
-    private final Pose intake3_start = new Pose(38.10040705563094,36.146540027137036,Math.toRadians(180));
-    private final Pose intake3_end = new Pose(15.230936227951153,36.146540027137036,Math.toRadians(180));
-    private final Pose OpGate = new Pose(15.044776119402984,70.1438263229308,Math.toRadians(90));
-    private final Pose Gate_end = new Pose(12.378561736770692,70.1438263229308,Math.toRadians(90));
+    private final Pose intake1_start = new Pose(43.415196743554944,82.32157394843964,Math.toRadians(180));
+    private final Pose intake1_end = new Pose(18.815468113975577,82.36567164179105,Math.toRadians(180));
+    private final Pose intake2_start = new Pose(44.5427408412483,59.134328358208954,Math.toRadians(180));
+    private final Pose intake2_end = new Pose(18.815468113975577,59.134328358208954,Math.toRadians(180));
+    private final Pose intake3_start = new Pose(41.27883310719131,34.55902306648575,Math.toRadians(180));
+    private final Pose intake3_end = new Pose(18.815468113975577,35.13500678426051,Math.toRadians(180));
+    private final Pose OpGate = new Pose(18.4314789687924,69.3100407055631,Math.toRadians(90));
+    private final Pose Gate_end = new Pose(14.783582089552239,69.3100407055631,Math.toRadians(90));
     private final Pose All_end = new Pose(21.883310719131615,92.80868385345998,Math.toRadians(136));
 
     private PathChain startTOlaunch, TOintake1, ONintake1, TOlaunch1, TOintake2, ONintake2, TOgate, ONgate, Tolaunch2, TOintake3, ONintake3, TOlaunch3, TOfinish;

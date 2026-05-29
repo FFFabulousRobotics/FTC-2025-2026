@@ -1,14 +1,10 @@
 package org.firstinspires.ftc.teamcode.test;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 import static java.lang.Math.abs;
 import static java.lang.Thread.sleep;
 
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.paths.PathChain;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -18,7 +14,6 @@ import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.MotorPIDController;
-import org.firstinspires.ftc.teamcode.PedroPathing_forBlue;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @TeleOp

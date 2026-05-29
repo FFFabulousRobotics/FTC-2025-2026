@@ -80,16 +80,19 @@ public class ManualOpModeTest extends LinearOpMode {
         // 创建驱动对象
         drive = new MecanumDrive(leftFront, rightFront, leftRear, rightRear, (GoBildaPinpointDriver)hardwareMap.get("odo"), powerFactors);
 
+        drive.setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motor.setPower(0.8);
         double CurrentTime = time.seconds();
-        while(time.seconds() - CurrentTime < 1.5) ;
+        while(time.seconds() - CurrentTime < 0.5) ;
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         pid.setTarget(-1200);
         ElapsedTime pidtimer = new ElapsedTime();
-        while(abs(pid.update()) > 5 && pidtimer.seconds() < 1.0) ;
+        while(abs(pid.update()) > 5 && pidtimer.seconds() < 0.5) ;
         motor.setPower(0.0);
 
         waitForStart();

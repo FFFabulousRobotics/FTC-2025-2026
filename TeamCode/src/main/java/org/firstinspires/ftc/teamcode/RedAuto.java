@@ -19,10 +19,6 @@ public class RedAuto extends LinearOpMode{
         s1.setPosition(0.5);
         s3.setPosition(0.5);
         s2.setPosition(0.5);
-        sleep(100);
-        s1.setPosition(0.4);
-        s2.setPosition(0.6);
-        s3.setPosition(0.6);
     }
     public void safe(ZwhPathing pathing) {
         pathing.setTarget(-450.2,19.8,-37.53);
@@ -45,7 +41,7 @@ public class RedAuto extends LinearOpMode{
         double t0 = time.seconds(), t1 = time.seconds();
         //press shooter
         pid.setTarget(-7000);
-        safe(pathing);
+//        safe(pathing);
         pathing.setTarget(x0,y0,-37.62);
         while(!pathing.update())
         {
@@ -116,7 +112,6 @@ public class RedAuto extends LinearOpMode{
         Servo s1 = (Servo) (hardwareMap.get("servo0"));
         Servo s2 = (Servo) (hardwareMap.get("servo1"));
         Servo s3 = (Servo) (hardwareMap.get("servo2"));
-        Servo brush = (Servo) (hardwareMap.get("Brush"));
         s1.setPosition(0.4);
         s2.setPosition(0.6);
         s3.setPosition(0.6);

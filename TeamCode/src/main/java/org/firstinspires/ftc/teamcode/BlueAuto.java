@@ -16,9 +16,7 @@ public class BlueAuto extends LinearOpMode{
     public void shoot(Servo s1,Servo s2,Servo s3)
     {
         s1.setPosition(0.5);
-        sleep(100);
         s3.setPosition(0.5);
-        sleep(100);
         s2.setPosition(0.5);
         sleep(100);
         s1.setPosition(0.4);
@@ -114,8 +112,6 @@ public class BlueAuto extends LinearOpMode{
         Servo s1 = (Servo) (hardwareMap.get("servo0"));
         Servo s2 = (Servo) (hardwareMap.get("servo1"));
         Servo s3 = (Servo) (hardwareMap.get("servo2"));
-        Servo brush = (Servo) (hardwareMap.get("Brush"));
-        brush.setPosition(1);
         s1.setPosition(0.4);
         s2.setPosition(0.6);
         s3.setPosition(0.6);
