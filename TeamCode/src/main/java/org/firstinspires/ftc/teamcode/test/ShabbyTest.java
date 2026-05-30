@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.test;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.hypot;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -18,45 +19,55 @@ import org.firstinspires.ftc.teamcode.MotorPIDController;
 public class ShabbyTest extends OpMode {
     DcMotor leftFront, rightFront, leftRear, rightRear;
     GoBildaPinpointDriver pp;
-    double[] powerFactors;
     MecanumDrive drive;
     ZwhPathing pathing;
     ElapsedTime time = new ElapsedTime();
-    double[] distancePIDParams, anglePIDParams;
-    // 初始化电机
     DcMotor motor;
     MotorPIDController pid;
     DcMotor intake;
     Servo s1, s2, s3;
 
     boolean ONLAUNCH = false, ONPRESS = false;
-    double launchtime, presstime;
+    double launchtime, presstime, intaketime;
+    double CURRENTX, CURRENTY, CURRENTTIME, RACESTARTTIME;
     public enum PathState {
         Pred,
         START,
-        END
+        END,
+        Fied
     }
     PathState pathState;
 
     public void pathupdate() {
         switch (pathState) {
             case Pred:
-                pathing.setTarget(-212.2,41.9,-10.55);
+                pathing.setTarget(-237.1,12.2,-5.26);
                 pathState = PathState.START;
                 break;
             case START:
                 if(pathing.update()) {
                     shoot();
+                    pathing.setTarget(-474.3,134.5,37.31);
                     pathState = PathState.END;
+                    pathing.setMaxPower(0.5);
                 }
                 break;
             case END:
-                telemetry.addLine("AUTONOMOUS FINISHED");
+                if(pathing.update()) {
+                    telemetry.addLine("AUTONOMOUS FINISHED");
+                    pathState = PathState.Fied;
+                }
+                break;
+            case Fied:
+                drive.drive(0,0,true,0);
                 break;
         }
     }
 
     public void shoot() {
+        drive.stop();
+        double preshoottime = time.seconds();
+        while(time.seconds() - preshoottime <= 1) ;
         s1.setPosition(0.5);
         s2.setPosition(0.5);
         s3.setPosition(0.5);
@@ -74,7 +85,7 @@ public class ShabbyTest extends OpMode {
     }
 
     public void pressupdate() {
-        if(time.seconds() - presstime <= 1.5) motor.setPower(-1.0);
+        if(time.seconds() - presstime <= 2) motor.setPower(-1.0);
         else {
             pid.setTarget(-1200);
             if(abs(pid.update()) <= 10) ONPRESS = false;
@@ -115,27 +126,51 @@ public class ShabbyTest extends OpMode {
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motor.setPower(0.8);
         double CurrentTime = time.seconds();
-        while(time.seconds() - CurrentTime < 0.5) ;
+        while(time.seconds() - CurrentTime < 0.5) motor.setPower(0.8- (time.seconds() - CurrentTime) * 1.6);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         pid.setTarget(-1200);
         ElapsedTime pidtimer = new ElapsedTime();
-        while(abs(pid.update()) > 5 && pidtimer.seconds() < 0.5) ;
+        while(abs(motor.getCurrentPosition() + 1200) > 5 && pidtimer.seconds() < 1.0) pid.update();
         motor.setPower(0.0);
 
         drive.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
+    public void start() {
+        CURRENTX = 0;
+        CURRENTY = 0;
+        CURRENTTIME = time.seconds();
+        RACESTARTTIME = time.seconds();
+        ONLAUNCH = false;
+        ONPRESS = false;
+        pathState = PathState.Pred;
+    }
+
     @Override
     public void loop() {
-        pathupdate();
+        double CURRENTSPEED, dx, dt;
+        dx = hypot(drive.getIMU().getPosX(DistanceUnit.MM) - CURRENTX, drive.getIMU().getPosY(DistanceUnit.MM) - CURRENTY);
+        dt = time.seconds() - CURRENTTIME;
+        if(dt <= 0.001) dt = 0.001;
+        CURRENTSPEED = dx / dt;
+        CURRENTX = drive.getIMU().getPosX(DistanceUnit.MM);
+        CURRENTY = drive.getIMU().getPosY(DistanceUnit.MM);
+        CURRENTTIME = time.seconds();
 
-        if(time.seconds() - launchtime >= 0.1 && ONLAUNCH) overlaunch();
-        if(ONPRESS) pressupdate();
+        if(!ONLAUNCH) pathupdate();
+
+        if(time.seconds() - launchtime >= 0.5 && ONLAUNCH) overlaunch();
+        if(time.seconds() - RACESTARTTIME >= 28.5 || !ONPRESS) {
+            pid.setTarget(-1200);
+            pid.update();
+        }
+        else if(ONPRESS) pressupdate();
 
         telemetry.addData("path state", pathState.toString());
+        telemetry.addData("speed", CURRENTSPEED);
         telemetry.addData("x", drive.getIMU().getPosX(DistanceUnit.MM));
         telemetry.addData("y", drive.getIMU().getPosY(DistanceUnit.MM));
         telemetry.addData("heading", drive.getIMU().getHeading(AngleUnit.DEGREES));

@@ -40,8 +40,8 @@ public class ManualOpModeTest extends LinearOpMode {
         }
         else {
             pressDONE = true;
-            pid.setTarget(-1200);
-            if(abs(motor.getCurrentPosition() + 1200) >= 10) {
+            pid.setTarget(-600);
+            if(abs(motor.getCurrentPosition() + 600) >= 10) {
                 pid.update();
             }
             else {
@@ -86,11 +86,11 @@ public class ManualOpModeTest extends LinearOpMode {
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motor.setPower(0.8);
         double CurrentTime = time.seconds();
-        while(time.seconds() - CurrentTime < 0.5) ;
+        while(time.seconds() - CurrentTime < 0.5) motor.setPower(0.8 - (time.seconds() - CurrentTime) * 1.6);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        pid.setTarget(-1200);
+        pid.setTarget(-600);
         ElapsedTime pidtimer = new ElapsedTime();
         while(abs(pid.update()) > 5 && pidtimer.seconds() < 0.5) ;
         motor.setPower(0.0);

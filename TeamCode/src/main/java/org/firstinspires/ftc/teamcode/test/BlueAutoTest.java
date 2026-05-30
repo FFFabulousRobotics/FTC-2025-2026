@@ -28,7 +28,7 @@ public class BlueAutoTest extends OpMode {
     Servo s1, s2, s3;
 
     boolean ONLAUNCH = false, ONPRESS = false;
-    double launchtime, presstime;
+    double launchtime, presstime, intaketime;
     double CURRENTX, CURRENTY, CURRENTTIME, RACESTARTTIME;
     public enum PathState {
         Pred,
@@ -50,74 +50,91 @@ public class BlueAutoTest extends OpMode {
     public void pathupdate() {
         switch (pathState) {
             case Pred:
-                pathing.setTarget(-212.2,41.9,-10.55);
+                pathing.setTarget(-237.1,12.2,-5.26);
                 pathState = PathState.START;
                 break;
             case START:
-                if(pathing.update() && !ONPRESS) {
+                if(pathing.update()) {
                     shoot();
-                    pathing.setTarget(-425.9,150.9,38.26);
+                    pathing.setTarget(-474.3,134.5,37.31);
                     pathState = PathState.GOINTAKE1;
+                    pathing.setMaxPower(0.5);
                 }
                 break;
             case GOINTAKE1:
                 if(pathing.update()) {
-                    pathing.setTarget(-249.3,285.0,38.26);
+                    pathing.setTarget(-241.1,298.4,35.82);
                     pathState = PathState.DOINTAKE1;
                     intake.setPower(1.0);
+                    intaketime = time.seconds();
+                    pathing.setMaxPower(1.0);
                 }
                 break;
             case DOINTAKE1:
                 if(pathing.update()) {
-                    pathing.setTarget(-212.2,41.9,-10.55);
-                    pathState = PathState.SHOOT1;
-                    intake.setPower(0.0);
+                    if(time.seconds() - intaketime >= 2) {
+                        pathing.setTarget(-237.1,12.2,-5.26);
+                        pathState = PathState.SHOOT1;
+                        intake.setPower(0.0);
+                    }
                 }
                 break;
             case SHOOT1:
-                if(pathing.update() && !ONPRESS) {
-                    shoot();
-                    pathing.setTarget(-596.5,310.0,38.26);
-                    pathState = PathState.GOINTAKE2;
+                if(pathing.update()) {
+                    if(!ONPRESS) {
+                        shoot();
+                        pathing.setTarget(-650.4, 300.1, 35.47);
+                        pathState = PathState.GOINTAKE2;
+                    }
                 }
                 break;
             case GOINTAKE2:
                 if(pathing.update()) {
-                    pathing.setTarget(-382.1,474.5,38.26);
+                    pathing.setTarget(-371.7,494.0,33.18);
                     pathState = PathState.DOINTAKE2;
                     intake.setPower(1.0);
+                    intaketime = time.seconds();
+                    pathing.setMaxPower(0.5);
                 }
                 break;
             case DOINTAKE2:
                 if(pathing.update()) {
-                    pathing.setTarget(-212.2,41.9,-10.55);
-                    pathState = PathState.SHOOT2;
-                    intake.setPower(0.0);
+                    if(time.seconds() - intaketime >= 2) {
+                        pathing.setTarget(-237.1,12.2,-5.26);
+                        pathState = PathState.SHOOT2;
+                        intake.setPower(0.0);
+                        pathing.setMaxPower(1.0);
+                    }
                 }
                 break;
             case SHOOT2:
-                if(pathing.update() && !ONPRESS) {
+                if(pathing.update()) {
                     shoot();
-                    pathing.setTarget(-693.8,523.0,38.26);
+                    pathing.setTarget(-786.4,471.6,37.63);
                     pathState = PathState.GOINTAKE3;
                 }
                 break;
             case GOINTAKE3:
                 if(pathing.update()) {
-                    pathing.setTarget(-516.1,660.8,38.26);
+                    pathing.setTarget(-506.9,669.8,35.57);
                     pathState = PathState.DOINTAKE3;
                     intake.setPower(1.0);
+                    intaketime = time.seconds();
+                    pathing.setMaxPower(0.5);
                 }
                 break;
             case DOINTAKE3:
                 if(pathing.update()) {
-                    pathing.setTarget(-212.2,41.9,-10.55);
-                    pathState = PathState.SHOOT3;
-                    intake.setPower(0.0);
+                    if(time.seconds() - intaketime >= 2) {
+                        pathing.setTarget(-237.1,12.2,-5.26);
+                        pathState = PathState.SHOOT3;
+                        intake.setPower(0.0);
+                        pathing.setMaxPower(1.0);
+                    }
                 }
                 break;
             case SHOOT3:
-                if(pathing.update() && !ONPRESS) {
+                if(pathing.update()) {
                     shoot();
                     pathing.setTarget(-223.6,35.0,-0.25);
                     pathState = PathState.END;
@@ -137,6 +154,8 @@ public class BlueAutoTest extends OpMode {
 
     public void shoot() {
         drive.stop();
+//      double preshoottime = time.seconds();
+//      while(time.seconds() - preshoottime <= ) ;
         s1.setPosition(0.5);
         s2.setPosition(0.5);
         s3.setPosition(0.5);
@@ -154,7 +173,7 @@ public class BlueAutoTest extends OpMode {
     }
 
     public void pressupdate() {
-        if(time.seconds() - presstime <= 1.5) motor.setPower(-1.0);
+        if(time.seconds() - presstime <= 2) motor.setPower(-1.0);
         else {
             pid.setTarget(-1200);
             if(abs(pid.update()) <= 10) ONPRESS = false;
@@ -195,7 +214,7 @@ public class BlueAutoTest extends OpMode {
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motor.setPower(0.8);
         double CurrentTime = time.seconds();
-        while(time.seconds() - CurrentTime < 1.0) motor.setPower(0.8- (time.seconds() - CurrentTime) * 0.08);
+        while(time.seconds() - CurrentTime < 0.5) motor.setPower(0.8- (time.seconds() - CurrentTime) * 1.6);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -231,9 +250,9 @@ public class BlueAutoTest extends OpMode {
 
         if(!ONLAUNCH) pathupdate();
 
-        if(time.seconds() - launchtime >= 0.1 && ONLAUNCH) overlaunch();
-        if(time.seconds() - RACESTARTTIME >= 28.5) {
-            pid.setTarget(-1000);
+        if(time.seconds() - launchtime >= 0.5 && ONLAUNCH) overlaunch();
+        if(time.seconds() - RACESTARTTIME >= 28.5 || !ONPRESS) {
+            pid.setTarget(-1200);
             pid.update();
         }
         else if(ONPRESS) pressupdate();
