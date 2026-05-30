@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.test;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.hypot;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -28,6 +29,7 @@ public class BlueAutoTest extends OpMode {
 
     boolean ONLAUNCH = false, ONPRESS = false;
     double launchtime, presstime;
+    double CURRENTX, CURRENTY, CURRENTTIME, RACESTARTTIME;
     public enum PathState {
         Pred,
         START,
@@ -52,7 +54,7 @@ public class BlueAutoTest extends OpMode {
                 pathState = PathState.START;
                 break;
             case START:
-                if(pathing.update()) {
+                if(pathing.update() && !ONPRESS) {
                     shoot();
                     pathing.setTarget(-425.9,150.9,38.26);
                     pathState = PathState.GOINTAKE1;
@@ -73,7 +75,7 @@ public class BlueAutoTest extends OpMode {
                 }
                 break;
             case SHOOT1:
-                if(pathing.update()) {
+                if(pathing.update() && !ONPRESS) {
                     shoot();
                     pathing.setTarget(-596.5,310.0,38.26);
                     pathState = PathState.GOINTAKE2;
@@ -94,7 +96,7 @@ public class BlueAutoTest extends OpMode {
                 }
                 break;
             case SHOOT2:
-                if(pathing.update()) {
+                if(pathing.update() && !ONPRESS) {
                     shoot();
                     pathing.setTarget(-693.8,523.0,38.26);
                     pathState = PathState.GOINTAKE3;
@@ -115,7 +117,7 @@ public class BlueAutoTest extends OpMode {
                 }
                 break;
             case SHOOT3:
-                if(pathing.update()) {
+                if(pathing.update() && !ONPRESS) {
                     shoot();
                     pathing.setTarget(-223.6,35.0,-0.25);
                     pathState = PathState.END;
@@ -134,6 +136,7 @@ public class BlueAutoTest extends OpMode {
     }
 
     public void shoot() {
+        drive.stop();
         s1.setPosition(0.5);
         s2.setPosition(0.5);
         s3.setPosition(0.5);
@@ -192,27 +195,51 @@ public class BlueAutoTest extends OpMode {
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motor.setPower(0.8);
         double CurrentTime = time.seconds();
-        while(time.seconds() - CurrentTime < 0.5) ;
+        while(time.seconds() - CurrentTime < 1.0) motor.setPower(0.8- (time.seconds() - CurrentTime) * 0.08);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         pid.setTarget(-1200);
         ElapsedTime pidtimer = new ElapsedTime();
-        while(abs(pid.update()) > 5 && pidtimer.seconds() < 0.5) ;
+        while(abs(motor.getCurrentPosition() + 1200) > 5 && pidtimer.seconds() < 1.0) pid.update();
         motor.setPower(0.0);
 
         drive.setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
+    public void start() {
+        CURRENTX = 0;
+        CURRENTY = 0;
+        CURRENTTIME = time.seconds();
+        RACESTARTTIME = time.seconds();
+        ONLAUNCH = false;
+        ONPRESS = false;
+        pathState = PathState.Pred;
+    }
+
     @Override
     public void loop() {
-        pathupdate();
+        double CURRENTSPEED, dx, dt;
+        dx = hypot(drive.getIMU().getPosX(DistanceUnit.MM) - CURRENTX, drive.getIMU().getPosY(DistanceUnit.MM) - CURRENTY);
+        dt = time.seconds() - CURRENTTIME;
+        if(dt <= 0.001) dt = 0.001;
+        CURRENTSPEED = dx / dt;
+        CURRENTX = drive.getIMU().getPosX(DistanceUnit.MM);
+        CURRENTY = drive.getIMU().getPosY(DistanceUnit.MM);
+        CURRENTTIME = time.seconds();
+
+        if(!ONLAUNCH) pathupdate();
 
         if(time.seconds() - launchtime >= 0.1 && ONLAUNCH) overlaunch();
-        if(ONPRESS) pressupdate();
+        if(time.seconds() - RACESTARTTIME >= 28.5) {
+            pid.setTarget(-1000);
+            pid.update();
+        }
+        else if(ONPRESS) pressupdate();
 
         telemetry.addData("path state", pathState.toString());
+        telemetry.addData("speed", CURRENTSPEED);
         telemetry.addData("x", drive.getIMU().getPosX(DistanceUnit.MM));
         telemetry.addData("y", drive.getIMU().getPosY(DistanceUnit.MM));
         telemetry.addData("heading", drive.getIMU().getHeading(AngleUnit.DEGREES));
